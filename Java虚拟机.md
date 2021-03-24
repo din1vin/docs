@@ -1,0 +1,439 @@
+#  JVM
+
+## 1. 简介
+
+**Java**: 作为TIOBE长期霸榜的编程语言,Java因为其跨平台,庞大的用户群体和软件生态,是最受推崇的语言,是一种程序员必学招式之一;(跨平台的语言)
+
+**JVM**: "Write once,Run everywhere"的基石.(跨语言的平台:除了Java,还能运行Kotlin,Clojure,Groovy,Scala,Jython,JRuby,JavaScript 只要这些语言的编译器生成的字节码文件,符合JVM的规范即可)
+
+**Java不是最强大的语言,JVM是最强大的虚拟机**
+
+### 1.1. Java发展史
+
+> * 1990年,Sun公司的Green Team开发了一个新的程序语言,命名为Oak,后期命名为Java
+> * 1995年,Sun公司正式发布Java和HotJava产品,Java首次公开亮相
+> * 1996年,Sun MicroSystems 发布JDK 1.0
+> * 1998年,JDK 1.2发布,指定JSP/Servlet EJB规范,Java分成了J2EE,J2SE,J2ME;
+> * 2000年.JDK1.3 发布,Java HotSpot Virtual Mechine 正式发布,成为Java默认虚拟机
+> * 2002年,JDK1.4 发布,古老的Classic虚拟机退出历史舞台
+> * 2003年,Java平台的Scala正式发布,Groovy也加入Java阵营
+> * 2004年,JDK 1.5正式改名为JavaSE 5.0
+> * 2006年,JDK 6 发布,同年,开源OpenJDK,HotSpot成为OpenJDK默认虚拟机
+> * 2007年,Clojure加入Java平台
+> * 2008年,Oracle收购BEA得到了JRockit虚拟机
+> * 2009年,Twitter把后台从Ruby迁移到Scala,是Java平台的又一次大规模应用
+> * 2010年,Oracle收购了Sun,获得Java商标和HotSpot虚拟机
+> * 2011年,JDK7发布,在JDK 1.7u4中,正式启用了新的垃圾回收器G1
+> * 2017年,JDK9发布,将G1设置为GC,替代CMS
+> * 2017年,IBM的J9开源,形成了现在的Open J9社区
+> * 2018年,JDBC JMS Servlet赠与Eclipse基金会
+> * 2018年,JDK 11发布,发布革命性的ZGC,调整JDK授权许可
+> * 2019年 JDK12发布,加入RedHat领导开发的Shenandoah GC
+
+### 1.2. JVM的架构模型
+
+#### 1.2.1 指令集的架构模型
+
+1. **基于栈** 的指令集架构(Java HotSpot虚拟机就是用的这种架构)
+
+   - 设计和实现简单,适用于资源受限的系统
+
+   - 避开了寄存器的分配难题,使用零指令方式分配
+
+   - 可移植性强,不需要硬件支持
+
+     
+
+2. **基于寄存器**的指令集架构(了解一下)
+
+   * 典型的应用是x86的二进制指令,比如传统的PC和Android的Davlik虚拟机
+   * 指令集结构完全依赖硬件,可移植性差
+   * 指令数少
+
+> 举例 : 2+3 两种指令集指令:
+>
+> 基于栈的指令集
+>
+> ```java
+> iconst_2 //常量2入栈
+> istore_1 
+> iconst_3 // 常量3入栈
+> istore_2
+> iload_1
+> iload_2
+> iadd  //执行加法
+> isstore_0  
+> ```
+>
+> 基于寄存器的计算流程:
+>
+> ```java
+> mov eax,2 //将寄存器eax的值设为2
+> add eax,3 //将寄存器eax的值加3
+> ```
+
+### 1.3. JVM的生命周期
+
+### 1.3.1 虚拟机的启动
+
+Java虚拟机的启动是通过引导类加载器(bootstrap class loader)创建一个初始类(init class)来完成的,这个初始类是由Java虚拟机的具体实现指定的.
+
+
+
+### 1.3.2 虚拟机的执行
+
+* 一个运行中Java虚拟机就是为了执行Java程序;
+* 虚拟机随着程序运行而运行;
+* 执行一个所谓的Java程序的时候,真正执行的是一个Java虚拟机进程.
+
+
+
+### 1.3.3 虚拟机退出
+
+* 程序正常执行结束
+* 程序异常或错误
+* 操作系统错误导致虚拟机退出
+* 由于某线程调用Runtime类或System类的exit方法,或者Runtime类的halt方法,并且Java安全管理器允许此操作
+* JNI(Java Native Interface)用JNI Invocation API来加载或卸载Java虚拟机
+
+## 2. 类加载子系统
+
+### 2.1 内存概述
+
+* **类装载器**:将字节码文件加载到内存中;
+
+  ![image-20210311102256950](/Users/dinl/Library/Application Support/typora-user-images/image-20210311102256950.png)
+
+
+
+### 2.2 类加载器
+
+自定义类加载器->AppClassLoader(系统类加载器) -> ExtClassLoader(扩展类加载器) -> BootstrapClassLoader(引导类加载器)
+
+
+
+* **引导类加载器BootstrapClassLoader**
+
+> 1. 使用C/C++语言实现的,嵌套在JVM内部,无法通过Java代码获取
+> 2. 用来加载核心类库($JAVA_HOME/jre/lib/rt.jar,resource.jar,或者sun.boot.class.path路径下的内容),用于提供JVM自身需要的类
+> 3. 处于安全考虑,Bootstrap启动类加载器只加载包名为java,javax,sun等开头的类
+
+```java
+//获取Bootstrap加载器加载的路径
+URL[] urLs = Launcher.getBootstrapClassPath().getURLs();
+for (URL urL : urLs) {
+System.out.println("引导类加载器路径>>>" + urL.toExternalForm());
+}
+```
+
+```shell
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/rt.jar
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/sunrsasign.jar
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/jsse.jar
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/jce.jar
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/charsets.jar
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/jfr.jar
+引导类加载器路径>>>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/classes
+```
+
+
+
+* **扩展类加载器ExtClassLoader**
+
+> 1. Java语言编写,派生于ClassLoader类
+> 2. 负责加载jre/lib/ext扩展目录下的类库,如果用户自建的JAR放在此目录下,也会自动由扩展加载器加载
+> 3. 也可用java.ext.dirs配置用ext加载器加载的目录,该配置目录下也由扩展类加载器加载
+> 4. ==虚拟机自带==的加载器
+
+```java
+String property = System.getProperty("java.ext.dirs");
+for (String s : property.split(";")) {
+		System.out.println("扩展类加载器>>>"+s);
+}
+```
+
+```shell
+扩展类加载器>>>/Users/dinl/Library/Java/Extensions
+扩展类加载器>>>/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/jre/lib/ext
+扩展类加载器>>>/Library/Java/Extensions
+扩展类加载器>>>/Network/Library/Java/Extensions
+扩展类加载器>>>/System/Library/Java/Extensions
+扩展类加载器>>>/usr/lib/java
+```
+
+
+
+* **系统类加载器AppClassLoader**
+
+>1. Java语言编写,派生于ClassLoader,继承自ExtClassLoader
+>2. 用java.class.path配置AppClassLoader的加载目录
+>3. ==该类加载器是程序中的默认类加载器==
+>4. 除了前面两个类加载器之外的类都是由自定义类加载器加载的
+
+### 2.3 双亲委派机制
+
+Java虚拟机对class文件采用的是==按需加载==的方式,也就是说当需要用到该类时才将它的class文件加载到内存中生成class对象,加载机制为`双亲委派机制`,就是==把请求交给父类==处理,它是一种任务委派机制.
+
+> 加载一个类的时候,往加载器的父类递归,双亲指的是(父亲->祖父),类加载器会一直往上找,找到BootStrap ClassLoader,如果BootStrap ClassLoader无法加载,再看ExtClassLoader是否能够加载,都无法加载的时候,才由AppClassLoader加载.
+
+#### 优势
+
+* 避免类的重复加载
+* 保护程序安全,防止核心API被随意篡改
+
+
+
+------
+
+
+
+## 3. 运行时数据区概述及线程
+
+### JVM参数说明
+
+| 参数                       | 说明                                                         | 默认值             |
+| -------------------------- | ------------------------------------------------------------ | ------------------ |
+| -Xss                       | 调整虚拟机栈内存                                             | 各系统默认值不同   |
+| -Xms,-Xmx                  | 堆初始大小和堆最大容量,==绝大多数情况下把这两个数值设置成一样== | 物理内存的1/64,1/4 |
+| -XX:NewRatio               | 老年代跟新生代的容量比例                                     | 2                  |
+| -XX:SurvivorRatio          | 新生代中Eden占据总内存(视为10份)的份量                       | 8                  |
+| -XX:+PrintGCDetails        | 打印垃圾回收细节                                             |                    |
+| -XX:TLABWasteTargetPercent | 设置TLAB空间占Eden区大小百分比                               | 1                  |
+| -Xmn                       | 设置新生代的大小                                             |                    |
+| -XX:+PrintFlagsInitial     | 查看所有的参数的默认初始值                                   |                    |
+| -XX:+PrintFlagsFinal       | 查看所有的参数的最终值                                       |                    |
+| -XX:MaxTenuringThreshold   | MinorGC中晋升老年区最大次数                                  | 15                 |
+
+![image-20210311104734993](/Users/dinl/Library/Application Support/typora-user-images/image-20210311104734993.png)
+
+* PC寄存器: pc寄存器用来存储指向下一条指令(要执行的代码)的地址,由执行引擎来读取下一条代码.==每一个线程一份==
+* 虚拟机栈:由多个栈帧构成,栈帧中包括: 本地变量表(Local Variables),操作数栈(Operand Stack),动态链接(Dynamic Links),返回地址(Return Address),==每个线程一份==
+* 方法区: HotSpot独有的区域,存放常量,类信息,域信息,方法信息等,==线程共用,生命周期与JVM进程相同==
+* 本地方法栈: 调用本地方法,==每个线程一份==
+* 堆区: 存放Java对象,被多个线程共享,是RuntimeArea最大的区域,==线程共用,生命周期与JVM进程相同==
+
+### 3.1 PC寄存器
+
+* 它是程序控制流的指示器,分支,循环,跳转,异常处理,线程恢复等基础功能都要依赖程序计数器完成,
+
+* 字节码解释器就是通过改变这个计数器的值来选取下一条需要执行的字节码指令
+
+* 它是唯一一个在Java虚拟机规范中没有规定任何OutOfMemory的区域,也没有GC
+
+> **常见面试题**:
+>
+> 1. PC寄存器为什么要记录当前线程的执行地址?
+>
+>    因为PC寄存器是线程私有的,CPU在各个线程的切换中,线程内部的PC寄存器可以告诉CPU从哪继续执行;
+>
+> 2. 为什么PC寄存器是线程私有的?
+>
+>    因为需要保证切换期间,每个线程可以完整执行,不被其他线程影响.
+
+### 3.2 虚拟机栈
+
+#### 3.2.1 栈
+
+1. 来历?
+
+`为什么不继续使用PC寄存器,而是用栈帧来保存调用顺序呢?`
+
+因为不同硬件CPU的寄存器架构不同,考虑到JVM跨平台的设计理念,不能设计为基于寄存器的;
+
+2. 跟堆的分工
+
+==栈是运行时的单位,堆是存储的单位==
+
+栈被用来解决程序的运行问题,即程序执行顺序,怎样去处理数据?(5%内存空间)
+
+堆被用来解决程序的存储问题,数据怎么存储,存储在那里?(95%的内存空间)
+
+3. 介绍
+
+   - Java虚拟机栈(Java Virtual Machine Stack),早期也叫Java栈.
+
+   - 每个线程在创建的时候都会创建一个虚拟机栈,内部保存着一个个的栈帧(Stack Frame),对应着一次次的Java方法的调用;
+
+   - 生命周期与线程相同
+
+4. 作用
+
+   主管Java程序的运行,它保存方法的局部变量,部分结果,并参与方法的调用和返回.
+
+5. 栈的特点(优点)
+
+   * 栈是一种快速有效的分配存储方式,访问速度仅次于程序计数器
+   * JVM直接对Java栈的操作只有两个:
+     * 每个方法执行,伴随着进栈
+     * 执行结束后的出栈
+
+   * 栈不存在GC
+   * 存在OOM问题
+
+> **常见面试题:**
+>
+> 1. 开发中遇到的异常有哪些?
+>
+>    OutOfMemoryError: ==JVM允许动态扩展==,但是在尝试扩展的时候无法申请到足够的内存,或者在创建新的线程的时没有足够的内存去创建新的虚拟机栈;
+>
+>    StackOverflowError:线程请求的栈容量大于==JVM设定(-Xss)的最大容量==的时候抛出此异常(递归代码常见错误);
+
+#### 3.2.2 栈帧(Stack Frame)
+
+栈中的数据以栈帧的形式存在,一个线程正在执行的方法对应着栈中的一个栈帧,栈帧是一个内存块(数据集),保存着执行过程中的各种信息;
+
+* 局部变量表(Local Variables)
+
+  > - 局部变量表是一个==数字数组,主要用来存放方法参数和定义在方法体内的局部变量==;
+  >
+  > - 局部变量表建立在线程内部栈的栈帧上,是线程私有数据,==不存在线程数据安全问题==;
+  >
+  > - ==局部变量表大小是编译初期确定下来的==,保存为maximum local variables,运行期间不改变局部变量表大小;
+  >
+  > - 最基本的存储单元是slot(变量槽)
+  >
+  >   **局部变量表中的变量是垃圾回收的根节点,只要被局部变量表中直接或间接引用的对象都不会被回收.**
+
+* 操作数栈(Operand Stack) (表达式栈)
+
+  >* 操作数栈是数组实现的,限制只能操作尾部元素,但是有数组的索引,按照顺序存放;
+  >
+  >* 操作数栈就是根据操作指令,压栈(bipush,istore_1),取栈顶元素(iload_1)
+  >* 虽然操作数栈具有数组索引,但是只能通过栈顶操作元素,无法通过索引访问操作数栈
+  >* 跟局部变量表一样,==操作数栈也是创建初期就确定长度==.
+  >* ==栈顶缓存技术==,指的是将栈顶元素缓存在物理CPU的寄存器中,降低读写次数
+
+* 动态链接(Dynamic Linking) (指向运行时常量池的方法引用)
+
+  > * 比如invokevirtual #7 调用常量池中第7个符号引用对应的方法. 
+
+* 方法返回地址(Return Address) (或方法正常或异常退出时的定义)
+
+  > * 存放调用该方法的pc寄存器的值
+
+* 一些附加信息
+
+  不一定有,比如程序调试相关信息.
+
+> **常见面试题**
+>
+> 1. 举例常见栈溢出情况?
+>    * 递归调用有问题, -Xss调整大小
+>
+> 2. 调整栈大小就能保住不出现溢出吗?
+>    * 不一定, 如果程序正常,可能调大了能用
+>    * 如果程序本身有问题,后续还会出现问题.
+>
+> 3. 分配的栈内存越大越好吗?
+>    * 栈内存分配过大,允许创建的线程数量可能就会变少
+>
+> 4. 栈内有垃圾回收机制吗?
+>    * 没有
+>
+> 5. 方法内定义的局部变量是否安全?
+>    * 仅供方法内部的原始内存变量是安全的
+>    * 如果返回给其他线程调用的引用变量,有可能不安全
+
+
+
+### 3.3 本地方法接口(JNI)
+
+定义: Native Method就是一个Java调用非Java代码的接口.设计初衷是融合C/C++程序.
+
+**为什么要使用Native Method?**
+
+* 与Java外环境交互: 使用C/C++;
+
+* 与操作系统交互: JVM不是操作系统,在操作系统内的语言没法直接与操作系统交互.
+
+* Sun's Java: Sun的解释器是C实现的,所以很难避免的去调用C
+
+
+**本地方法栈**
+
+用于管理Java对本地方法的调用.HotSpot将本地方法栈跟虚拟机栈合二为一了.
+
+
+
+### 3.4 堆(heap)
+
+
+
+一个JVM实例只存在一个堆内存,堆也是Java内存管理的核心区域.
+
+==所有的对象实例以及数组都应该在运行时分配在堆上.==
+
+堆按照垃圾回收机制,又可以做如下区分,新生区Eden+Survivor,养老区Old/Tenure,永久区Perm(JDK8之后叫做元空间Meta).
+
+
+
+**堆空间大小设置:**
+
+"-Xms" 初始化的堆内存,等价于 -XX:InitialHeapSize
+
+"-Xmx" 堆区的最大内存.等价于: -XX:MaxHeapSize
+
+==开发中一般将初始内存跟最大内存设计成相同值,可以避免扩容缩容过程的性能损耗.==
+
+
+
+**OOM举例**
+
+存放数据大于最大空间容量.
+
+
+
+**新生代老年代相关参数设置**
+
+年轻代:Eden(占年轻代总空间的80%),Survivor0,Survivor1(有时候也叫from区跟to区), 老年代.
+
+默认-Xx:NewRatio=2,表示老年代内存空间是新生代的两倍. 一般情况下不会修改该比例.除非已知程序中有大量生命周期长的对象.
+
+**内存分配策略**
+
+* 优先分配到Eden区
+* 大对象直接分配到老年代(需要比较长连续空间的对象),==避免出现过多大对象.==
+* 长期存活的对象分配到老年代
+* 动态年龄对象判断(相同年龄的对象数总和大于Survivor区空间的一半,年龄大于或等于该年龄的对象提前进入老年代)
+* 空间分配担保(老年代有空间时,把Survivor区存不下的数据放到老年区)
+
+
+
+**为每个线程分配Thread Local Allocation Buffer**
+
+为了避免多个线程操作同一个地址,JVM为每个线程独立分配私有缓冲区.(在Eden区划分).默认情况下,TLAB空间内存非常小,占整个Eden空间的1%,通过`--XX:TLABWasteTargetPercent`设置TLAB空间所占用Eden空间的百分比大小.TLAB是线程分配对象内存的首选.一旦对TLAB空间分配内存失败,JVM便尝试通过使用加锁机制,确保数据操作的原子性,从而在Eden空间中分配内存.
+
+
+
+**堆是分配对象存储的唯一选择吗?**
+
+new对象的时候默认是堆,但是随着JIT发展与`逃逸分析技术`逐渐成熟,**栈上分配和标量替换**技术导致了一些微妙的变化,如果`一个对象并没有逃逸出方法的话,就有可能被优化成栈上分配技术`.
+
+ 
+
+![JVM Runtime](/Users/dinl/Pictures/mockup/JVM.png)
+
+### 3.5 方法区
+
+==一块独立于Java堆的内存空间==
+
+* 方法区与Java堆一样,是各个线程共享的内存区域
+* 方法区在JVM启动的时候被创建,物理内存跟堆一样可以是不连续的
+* 方法区的大小跟堆一样,既可以固定大小又可以动态扩展
+* 方法区的大小决定了系统可以保存多少个类,如果系统定义了太多类,导致方法区溢出,同样会抛出OutOfMemoryError:PermGen Space/MetaSpace.
+
+在JDK7及以前,习惯把方法区称为永久代,JDK8开始,叫做元空间.
+
+元空间跟永久代的本质区别: 元空间是本地内存(非虚拟机内存),永久代是虚拟机内存.
+
+**存放的数据:**
+
+* 类型信息: 类class,接口interface,枚举enum,注解annotation,类继承关系实现接口,类修饰符等
+* 域信息:类中的属性
+* 方法信息: 方法名,方法参数,方法修饰符,方法返回类型,异常表
+
+**运行时常量池vs常量池**
+
+常量池可以看成一张表,编译时准备好,虚拟机通过符号引用, 可以获取到要执行的类,方法等信息
+
+运行时常量池,在加载类以后,对应的常量池表.具备==动态性==.此时不再是符号地址了,而是真实的内存地址.
