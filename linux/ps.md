@@ -35,7 +35,7 @@ ps(process status),可以查看系统上的进程
 
 
 
-使用ps命令的关键不在于记住所有可用的参数,而是记住最有用的那些参数.
+**使用ps命令的关键不在于记住所有可用的参数,而是记住最有用的那些参数.**
 
 举个栗子:
 
@@ -43,24 +43,20 @@ ps(process status),可以查看系统上的进程
 
   ```shell
   ps -ef
-  UID        PID  PPID  C STIME TTY          TIME CMD
-  root         1     0  0  2020 ?        00:16:46 /usr/lib/systemd/systemd --switched-root --system --deserialize 21
-  root         2     0  0  2020 ?        00:00:01 [kthreadd]
-  root         3     2  1  2020 ?        1-16:51:56 [ksoftirqd/0]
-  root         5     2  0  2020 ?        00:00:00 [kworker/0:0H]
-  root         7     2  0  2020 ?        00:03:14 [migration/0]
-  root         8     2  0  2020 ?        00:00:00 [rcu_bh]
-  root         9     2  0  2020 ?        06:34:56 [rcu_sched]
-  root        10     2  0  2020 ?        00:00:00 [lru-add-drain]
-  root        11     2  0  2020 ?        00:00:55 [watchdog/0]
-  root        12     2  0  2020 ?        00:00:24 [watchdog/1]
-  root        13     2  0  2020 ?        00:00:32 [migration/1]
-  root        14     2  0  2020 ?        00:00:15 [ksoftirqd/1]
-  root        16     2  0  2020 ?        00:00:00 [kworker/1:0H]
-  root        17     2  0  2020 ?        00:00:19 [watchdog/2]
-  root        18     2  0  2020 ?        00:00:05 [migration/2]
-  root        19     2  0  2020 ?        00:00:29 [ksoftirqd/2]
-  root        21     2  0  2020 ?        00:00:00 [kworker/2:0H]
+  # 查看所有java进程
+  ps -ef |grep java
+  ```
+
+  
+
+* 显示所有进程更详细的信息,包括占用CPU、内存
+
+  ```shell
+  ps -aux 
+  # 根据cpu排序
+  ps -aux --sort -pcpu
+  # 根据占用内存排序
+  ps -aux --sort -pmem
   ```
 
   

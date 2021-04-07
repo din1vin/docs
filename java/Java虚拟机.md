@@ -102,7 +102,7 @@ Java虚拟机的启动是通过引导类加载器(bootstrap class loader)创建�
 
 * **类装载器**:将字节码文件加载到内存中;
 
-  ![image-20210311102256950](/Users/dinl/Library/Application Support/typora-user-images/image-20210311102256950.png)
+  ![image-20210311102256950](https://i.loli.net/2021/04/07/oiS2tdQmR1YjsMD.png)
 
 
 
@@ -204,7 +204,7 @@ Java虚拟机对class文件采用的是==按需加载==的方式,也就是说当
 | -XX:+PrintFlagsFinal       | 查看所有的参数的最终值                                       |                    |
 | -XX:MaxTenuringThreshold   | MinorGC中晋升老年区最大次数                                  | 15                 |
 
-![image-20210311104734993](/Users/dinl/Library/Application Support/typora-user-images/image-20210311104734993.png)
+![image-20210311104734993](https://i.loli.net/2021/04/07/dgXUmwlHf7FQSDM.png)
 
 * PC寄存器: pc寄存器用来存储指向下一条指令(要执行的代码)的地址,由执行引擎来读取下一条代码.==每一个线程一份==
 * 虚拟机栈:由多个栈帧构成,栈帧中包括: 本地变量表(Local Variables),操作数栈(Operand Stack),动态链接(Dynamic Links),返回地址(Return Address),==每个线程一份==
@@ -411,7 +411,13 @@ new对象的时候默认是堆,但是随着JIT发展与`逃逸分析技术`逐�
 
  
 
-![JVM Runtime](/Users/dinl/Pictures/mockup/JVM.png)
+![JVM Runtime](https://i.loli.net/2021/04/07/GJ6bBd412CuDlpE.png)
+
+**逃逸分析技术:**
+
+* 栈上分配: -XX:+DoEscapeAnalysis 从JDK1.7之后默认开启,如果成员变量只在方法内部有效,则会在栈上为其分配内存空间.
+* 同步省略: JIT编译器借助逃逸分析来**判断同步块所使用的的锁对象是否只能够被一个线程访问而没有被发布到其他线程**,如果没有,编译器会消除这部分的同步代码块,这种省略过程叫做`锁消除`.
+* 分离对象或标量替换: 将聚合量分为可以存在寄存器上面的标量.
 
 ### 3.5 方法区
 
@@ -437,3 +443,10 @@ new对象的时候默认是堆,但是随着JIT发展与`逃逸分析技术`逐�
 常量池可以看成一张表,编译时准备好,虚拟机通过符号引用, 可以获取到要执行的类,方法等信息
 
 运行时常量池,在加载类以后,对应的常量池表.具备==动态性==.此时不再是符号地址了,而是真实的内存地址.
+
+**方法区的内存回收**
+
+方法区的垃圾收集主要分两部分:
+
+* 常量池中废弃的常量
+* 不再使用的类型
