@@ -1,2 +1,2 @@
 # docs
-my learning docs
+这个是平时一些学习记录。
