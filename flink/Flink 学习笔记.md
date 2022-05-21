@@ -402,3 +402,5 @@ public static void main(String[] args) throws Exception {
   可以理解成checkpoint把state数据定时的持久化存储了
 
   
+
+[https://bahir.apache.org/docs/flink/current/flink-streaming-redis/]: 

@@ -1,5 +1,29 @@
 # Kafka 基础
 
+
+
+## Kafka是什么
+
+
+
+### message queue
+
+kafka是一个分布式的消息队列,一个典型的kafka体系架构包括若干Producer,若干Broker,和若干个Consumer以及一个Zookeeper集群.
+
+* Producer: 生产者,也就是发送消息的一方,生产者负责创建消息,将其投递到kafka中.
+* Consumer: 消费者,也就是接受消息的一方,消费者连接到kafka上并接收消息,进而进行相应的业务逻辑处理.
+* Broker: 服务代理节点,分布式的kafka一般有多个服务器.
+
+### kafka的用途
+
+* 异步通信:生产者发送的消息无需等待消费者的处理结果
+* 解耦: 写入消息跟读取消息的服务之间互不影响
+* 削峰: 消息队列看做是中间缓存, 允许高并发的消息延迟处理,削峰防止突然的高并发场景.
+* 发布订阅:  天然的发布/订阅模型
+* 可恢复性: 支持从指定offset开始重复消费,提高消费者处理的容错.
+* 顺序排队: 相同Topic的相同partition内消息是有序的,即先写入的消息先被消费.
+* ...
+
 ## Command Line命令
 
 ### Topic
@@ -140,5 +164,13 @@ public class KafkaConsumerDemo {
         }
     }
 }
+```
+
+
+
+kafka 查看消息堆积
+
+```shell
+kafka-consumer-groups.sh --bootstrap-server 172.20.4.77:9094 --describe --group h5-sign-uv
 ```
 

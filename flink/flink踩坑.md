@@ -28,3 +28,19 @@ project.tasks.compileScala.scalaCompileOptions.additionalParameters = ["-target:
 project.tasks.compileTestScala.scalaCompileOptions.additionalParameters = ["-target:jvm-1.8"]
 ```
 
+### 2.  comparing values of types Long and Null using `==' will always yield false
+
+说明: Scala Flink ValueState初始化
+
+flink算子中使用到状态的时候,需要对状态进行初始化,官网给出的写法如
+
+```scala
+if(status.value() == null) status.update(intialValue)
+```
+
+这个时候IDEA会报出标题所示的警告.
+
+把status.value() 改成status警告消失但是逻辑会有bug,因为status在open函数中会被初始化,不可能为null,所以永远不会被update(initialValue). 
+
+解决方案就是无视这个Warning. 强迫症的噩梦!
+

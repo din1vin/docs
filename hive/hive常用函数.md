@@ -1,4 +1,4 @@
-## 一、数值比较
+##  一、数值比较
 
 ### 1. 等值比较 : =与<=>
 
@@ -6,19 +6,13 @@
 
 **不同点**: AB都为null的时候 <=>返回True, = 返回False
 
-
-
 ### 2. 不等值比较: != 与 <>
 
 **说明**: 与传统数据库语言一致
 
-
-
 ### 3. 大于、小于、大于等于、小于等于: > ,< ,>=,<=
 
 **说明**: 与传统数据库语言一致
-
-
 
 ### 4. 区间比较:
 
@@ -26,13 +20,9 @@
 
 **说明**: 等价于 B<=A<C
 
-
-
 ### 5. 空值判断: is null , is not null
 
  **说明**: 与传统数据库语言一致
-
-
 
 ### 6. like
 
@@ -46,8 +36,6 @@ hive> select 1 from lxw1234 where 'football' like 'foot%';
 hive> select 1 from lxw1234 where 'football' like 'foot__'; 
 1
 ```
-
-
 
 > 注意: 否定时候用 NOT A like B.
 
@@ -67,8 +55,6 @@ hive> select 1 from lxw1234 where '123456' regexp '^\\d+$';
 1
 ```
 
-
-
 ## 二、数学操作
 
 数学操作的 AB两个都必须是数值类型
@@ -83,27 +69,19 @@ hive> select 1 from lxw1234 where '123456' regexp '^\\d+$';
 
 > 注意:hive 中最高精度的数据类型是 double,只精确到小数点后 16 位，在做除法运算的 时候要特别注意
 
-
-
 ### 2. 取余数: %
 
 **说明**: 取余结果类型是AB的最小父类型(详情见数据类型的继承关系)
-
-
 
 ### 3. 位操作与、或、非、异或: &,|,~,^
 
 **说明**: 与数学逻辑一致.
 
-
-
 ## 三、 逻辑操作
 
-### AND(&&), OR(||),NOT(!) 
+### AND(&&), OR(||),NOT(!)
 
 **说明:**与主流数据库一致
-
-
 
 ## 四、复合类型构造函数
 
@@ -118,8 +96,6 @@ hive> select array(1,2,3,4) from test;
 OK
 [1,2,3,4]
 ```
-
-
 
 ### 2. map
 
@@ -171,8 +147,6 @@ OK
  {"k2":"v2","k1":"v1"}
 ```
 
-
-
 ## 五、复合类型操作函数
 
 ### 1.  Array取值
@@ -223,8 +197,6 @@ OK
 a1
 ```
 
-
-
 ### 4. Array长度
 
 **语法:** size(Array a)
@@ -238,8 +210,6 @@ hive> select size(array(1,2,3,4)) from test;
 OK
 4
 ```
-
-
 
 ### 5. Map大小
 
@@ -285,8 +255,6 @@ OK
 ['a','b']
 ```
 
-
-
 ### 8. 获取map中的所有value
 
 语法: map_values(map a)
@@ -300,8 +268,6 @@ hive> select map_values(map('a',1,'b',2)) from test;
 OK
 [1,2]
 ```
-
-
 
 ### 9. 数组排序
 
@@ -318,8 +284,6 @@ select sort_array(array(3,2,4,1)) from test;
 OK
 [1,2,3,4]
 ```
-
-
 
 ## 六、数学计算函数
 
@@ -341,8 +305,6 @@ OK
 3.142
 ```
 
-
-
 ### 2. 向下取整
 
 **语法:** floor(double A)
@@ -358,8 +320,6 @@ hive> select floor(3.14) from test;
 OK
 3
 ```
-
-
 
 ### 3. 向上取整
 
@@ -380,8 +340,6 @@ hive> select ceiling(3.14) from test;
 OK
 4
 ```
-
-
 
 ### 4.  一以内随机数
 
@@ -404,8 +362,6 @@ hive> select rand(100) from test;
 0.7220096548596434
 ```
 
-
-
 ### 5. 自然指数e^x^
 
 **语法:** exp(double x)
@@ -418,8 +374,6 @@ hive> select rand(100) from test;
 hive> select exp(2) from test;
 7.38905609893065
 ```
-
-
 
 ### 6. 自然对数 lnX
 
@@ -434,8 +388,6 @@ hive> select ln(7.38905609893065) from test;
 2.0
 ```
 
-
-
 ### 7. 常用对数 log~10~X
 
 **语法**: log10(double x)
@@ -449,8 +401,6 @@ hive> select log10(100) from test;
 2.0
 ```
 
-
-
 ### 8. 以2为底对数 log~2~X
 
 **语法:** log2(double x)
@@ -463,8 +413,6 @@ hive> select log10(100) from test;
 hive> select log2(8) from test;
 3.0
 ```
-
-
 
 ### 9. 指数函数 a^x^
 
@@ -481,8 +429,6 @@ hive> select power(2,10) from test;
 1024.0
 ```
 
-
-
 ### 10. 对数函数 log~n~a
 
 **语法:** log(double n, double a)
@@ -495,8 +441,6 @@ hive> select power(2,10) from test;
 hive> select log(3,27) from test;
 3.0
 ```
-
-
 
 ### 11. 开方函数 ^n^√a
 
@@ -511,13 +455,11 @@ hive> select sqrt(16) from test;
 4
 ```
 
-### 12. 取余函数 
+### 12. 取余函数
 
 **语法:** pmod(double x,double y)
 
 **说明:** 返回 x%y的正余数
-
-
 
 ### 13. 取反函数
 
@@ -525,20 +467,16 @@ hive> select sqrt(16) from test;
 
 **说明:** 返回 -x
 
-
-
 ### 12. 三角函数
 
-| 函数名     | 用法    | 输入类型 | 输出类型 |
-| ---------- | ------- | -------- | -------- |
-| 正弦函数   | sin(x)  | double   | double   |
-| 反正弦函数 | asin(x) | double   | double   |
-| 余弦函数   | cos(x)  | double   | double   |
-| 反余弦函数 | acos(x) | double   | double   |
-| 正切函数   | tan(x)  | double   | double   |
-| 反正切函数 | atan(x) | double   | double   |
-
-
+| 函数名   | 用法      | 输入类型   | 输出类型   |
+| ----- | ------- | ------ | ------ |
+| 正弦函数  | sin(x)  | double | double |
+| 反正弦函数 | asin(x) | double | double |
+| 余弦函数  | cos(x)  | double | double |
+| 反余弦函数 | acos(x) | double | double |
+| 正切函数  | tan(x)  | double | double |
+| 反正切函数 | atan(x) | double | double |
 
 ## 七、进制转换
 
@@ -555,8 +493,6 @@ hive> select bin(7) from test;
 111
 ```
 
-
-
 ### 2. 十进制转十六进制
 
 **语法:** hex(bigint a)
@@ -569,8 +505,6 @@ hive> select bin(7) from test;
 hive> select hex(18) from test;
 12
 ```
-
-
 
 ### 3. 普通进制转换
 
@@ -588,8 +522,6 @@ hive> select conv(18,10,16) from test;
 12
 ```
 
-
-
 ### 4. 类型转换 cast
 
 **语法:** cast(a as int)
@@ -604,8 +536,6 @@ hive> select conv(18,10,16) from test;
 hive> select cast('1' as int) from test;
 1
 ```
-
-
 
 ## 八、 时间日期函数
 
@@ -627,8 +557,6 @@ OK
 20111208
 ```
 
-
-
 ### 2. 获取当前时间戳
 
 **语法:** unix_timestamp()
@@ -642,8 +570,6 @@ hive> select unix_timestamp() from test;
 OK
 1632814841
 ```
-
-
 
 ### 3.日期转时间戳
 
@@ -659,8 +585,6 @@ OK
 1609430400
 ```
 
-
-
 ### 4. 指定格式日期转时间戳
 
 **语法:**unix_timestamp(string date,string pattern)
@@ -675,8 +599,6 @@ OK
 1609430400
 ```
 
-
-
 ### 5. 获取时间字符串的日期
 
 **语法:** to_date(string dateString)
@@ -690,8 +612,6 @@ hive> select to_date('2021-01-01 19:01:01') from test;
 OK
 2021-01-01
 ```
-
-
 
 ### 6. 获取时间字符串中的年份
 
@@ -711,8 +631,6 @@ OK
 2021
 ```
 
-
-
 ### 7. 获取时间字符串中的月份
 
 **语法:** month(string dateString)
@@ -730,8 +648,6 @@ hive> select month('2021-09-11') from test;
 OK
 9
 ```
-
-
 
 ### 8. 获取时间字符串中的天
 
@@ -751,8 +667,6 @@ OK
 11
 ```
 
-
-
 ### 9. 获取时间字符串中的小时
 
 **语法:** hour(string dateString)
@@ -766,8 +680,6 @@ hive> select hour('2021-01-01 19:01:01') from test;
 OK
 19
 ```
-
-
 
 ### 10. 获取时间字符串中的分钟
 
@@ -783,8 +695,6 @@ OK
 1
 ```
 
-
-
 ### 11. 获取时间字符串中的秒
 
 **语法:** second(string dateString)
@@ -798,8 +708,6 @@ hive> select second('2021-01-01 19:01:01') from test;
 OK
 1
 ```
-
-
 
 ### 12. 获取时间字符串中的周
 
@@ -815,16 +723,16 @@ OK
 39
 ```
 
-
-
 ### 13. 日期相减
 
 **语法**: datediff(string enddate,string startdate)
 
 **返回值:** int
 
-
-
-
+```sql
+hive> select datediff('2021-12-01','2021-11-01') from test;
+OK
+30
+```
 
 参考: https://cwiki.apache.org/confluence/display/Hive/LanguageManual+UDF#LanguageManualUDF-LogicalOperators
